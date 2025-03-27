@@ -13,44 +13,51 @@ logger = logging.getLogger(__name__)
 
 class AssistantFunctions(FunctionContext):
     
-    logger.info('Initializing AssistantFunctions')
     def __init__(self):
+        logger.info('Initializing AssistantFunctions')
+
         super().__init__()
-        self.video_utils = DobotVision(
-            COM_PORT = 'COM9'
-        )
+        self.video_utils = DobotVision()
         self.video_utils.__enter__()
         
         self.positions = self.video_utils.dobot.pose()
         
-    logger.info('AssistantFunctions initialized successfully')
+        logger.info('AssistantFunctions initialized successfully')
     @ai_callable(
         
         description = """
 
             This Method is used to get objects detected by the camera.
-            Call this function whenever the user asks anything about what u can 'see' or if they ask to 'open the camera and do ...' 
-            You are to use the json data returned by the function, summarize it and describe it in a natural way to the user.
+            Call this function once whenever the user asks anything about what u can 'see' or if they ask to 'open the camera and tell me ...'  or they say 'Tell me what i'm currently holding'.
+            This function returns a string of the objects detected by the camera in json format. You are to parse this string and describe the objects in a natural way to the user.
             
         """
     )
     def get_objects(self):
-        objects = self.video_utils.get_coords_from_camera()
-        return f'Detected Objects: {objects}'
-    
+        try:
+            objects = self.video_utils.get_coords_from_camera()
+            logger.info(f'Objects detected: {objects}')
+            
+            if not objects:
+                return "Sorry, I can't detect any objects"
+            
+            return f'Detected Objects: {objects}'
+        
+        except Exception as e:
+            logger.error(f'Error in get_objects: {e}')
+            return "Sorry, I can't detect any objects and i've encountered an error"
     
     @ai_callable(
         description = '''
         
         This function is used to move the robot to the position of an object detected by the camera.
-        Call this function whenever the user asks to 'move the robot to a specific object detected by the camera'.
+        Call this function whenever the user asks to 'move the robot to some specific object detected by the camera'.
         
         for example, If the user says 'move the robot to the red cube' you should call this function with the argument 'red_cube' and so on
         
-        
         '''
     )
-    def move_robot_from_positions(
+    def move_robot_from_object_positions(
         self,
         object: Annotated[
             str,
@@ -67,6 +74,9 @@ class AssistantFunctions(FunctionContext):
             y = robot_coords['Robot']['y']
             z = robot_coords['Robot']['z']
             
+            logger.info(f'Robot Coords: {robot_coords}')
+            
+            
             self.video_utils.dobot.move_to(
                 x = x,
                 y = y,
@@ -77,7 +87,7 @@ class AssistantFunctions(FunctionContext):
             return f'Moving robot to {x}, {y}, {z}'
         
         else:
-            return f" I'm sorry but i can't find {object} in the camera"
+            return f" I'm sorry but i can't find {object} from the camera"
         
     
     @ai_callable(
@@ -85,10 +95,10 @@ class AssistantFunctions(FunctionContext):
         
         This function moves the robot to the specified joint angle or angles.
         Parameters:
-        - base: The base angle of the robot
-        - shoulder: The shoulder angle of the robot
-        - elbow: The elbow angle of the
-        - end_effector: The end-effector angle of the robot
+        - base: The base angle of the robot must be in between -100 and 100
+        - shoulder: The shoulder angle of the robot must be in between 0 to 75
+        - elbow: The elbow angle of the robot must be in between 0 to 65
+        - end_effector: The end-effector angle of the robot must be in between 0 to 100
         - end_effector_state: The end-effector state of the robot, this could be either True or False or  on or off
         
         Call this function whenever the user asks you to move the any of the robot's joints to a particular angle.
@@ -148,3 +158,4 @@ class AssistantFunctions(FunctionContext):
             self.video_utils.dobot.suck(False)
             
         return f"I've Moved the robot's Base: {base}, Shoulder: {shoulder}, elbow: {elbow}, end_effector: {end_effector}"
+    

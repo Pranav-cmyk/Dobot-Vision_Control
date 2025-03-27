@@ -29,7 +29,8 @@ DEFAULT_SYSTEM_INSTRUCTIONS = """
                     "y": 0.0,
                     "z": 0.0
                 }
-            }
+            },
+        
     }
     Ensure that the position values are in mm relative to the bottom left corner of the image(Assume the bottom left corner is (0, 0, 0)).
     Let the z value determine the height of the object relative to the image itself and x determine the straight line distance from the camera to the object(ensure this value is in between 0 - 120) and y be the left and right distance to the object relative to the center of the frame. be sure values to the left be positive and right be negative
@@ -71,7 +72,6 @@ class DobotVision:
         self.model = model
         self.COM_PORT = COM_PORT
         self.camera_index = camera_index
-        self.chat = None
         self.camera = None
         self.dobot = None
         self.system_instructions = system_instructions
