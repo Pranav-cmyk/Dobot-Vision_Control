@@ -1,0 +1,9 @@
+pydobot
+pyfirmata2
+livekit
+livekit-agents
+livekit-plugins-google
+google-genai
+pillow
+numpy
+opencv-python
