@@ -20,11 +20,10 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 DEFAULT_SYSTEM_INSTRUCTIONS = """
-    Detect the position of a green cube in the image. you are looking at the object top down with a small angle
+    Detect the position of various colored cubes in the image. you are looking at the object top down with a small angle
     Output a json object with the following format:
     {
-        "object": {
-                "name": "object_name",
+        "object_name": {
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
@@ -34,6 +33,8 @@ DEFAULT_SYSTEM_INSTRUCTIONS = """
     }
     Ensure that the position values are in mm relative to the bottom left corner of the image(Assume the bottom left corner is (0, 0, 0)).
     Let the z value determine the height of the object relative to the image itself and x determine the straight line distance from the camera to the object(ensure this value is in between 0 - 120) and y be the left and right distance to the object relative to the center of the frame. be sure values to the left be positive and right be negative
+    Also label the object with names such as red_cube or green_cube and so on, generally separating objects with long names by an underscore
+
 """
 
 
@@ -225,9 +226,9 @@ class DobotVision:
         """
         (x1, y1, z1, _, _, _, _, _) = self.dobot.pose()
         
-        x = response['object']['position']['x']
-        y = response['object']['position']['y']  
-        z = response['object']['position']['z']  
+        x = response['position']['x']
+        y = response['position']['y']  
+        z = response['position']['z']  
 
         Robot = {
             'Robot': {

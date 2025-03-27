@@ -29,7 +29,7 @@ class AssistantFunctions(FunctionContext):
         description = """
 
             This Method is used to get objects detected by the camera.
-            Call this function whenever the user asks anything about what u can 'see' and if they ask to 'open the camera' 
+            Call this function whenever the user asks anything about what u can 'see' or if they ask to 'open the camera and do ...' 
             You are to use the json data returned by the function, summarize it and describe it in a natural way to the user.
             
         """
@@ -42,28 +42,42 @@ class AssistantFunctions(FunctionContext):
     @ai_callable(
         description = '''
         
-        This function is used to move the robot to the position of the object detected by the camera.
-        Call this function whenever the user asks to 'move the robot to the object detected by the camera'.
+        This function is used to move the robot to the position of an object detected by the camera.
+        Call this function whenever the user asks to 'move the robot to a specific object detected by the camera'.
+        
+        for example, If the user says 'move the robot to the red cube' you should call this function with the argument 'red_cube' and so on
+        
         
         '''
     )
-    def move_robot_from_positions(self):
+    def move_robot_from_positions(
+        self,
+        object: Annotated[
+            str,
+            TypeInfo(description = 'the name of the object mentioned by the user')
+        ]
+    ):
         objects = self.video_utils.get_coords_from_camera()
-        robot_coords = self.video_utils.json_output_to_robot_coordinates(objects)
+        logger.info(f'Objects: {objects}, Object: {object}')
         
-        x = robot_coords['Robot']['x']
-        y = robot_coords['Robot']['y']
-        z = robot_coords['Robot']['z']
+        if object in objects:
+            
+            robot_coords = self.video_utils.json_output_to_robot_coordinates(objects[object])
+            x = robot_coords['Robot']['x']
+            y = robot_coords['Robot']['y']
+            z = robot_coords['Robot']['z']
+            
+            self.video_utils.dobot.move_to(
+                x = x,
+                y = y,
+                z = z,
+                r = 0,
+                wait = True
+            )
+            return f'Moving robot to {x}, {y}, {z}'
         
-        self.video_utils.dobot.move_to(
-            x = x,
-            y = y,
-            z = z,
-            r = 0,
-            wait = True
-        )
-        
-        return f'Moving robot to {x}, {y}, {z}'
+        else:
+            return f" I'm sorry but i can't find {object} in the camera"
         
     
     @ai_callable(
@@ -108,6 +122,7 @@ class AssistantFunctions(FunctionContext):
         end_effector_state: Annotated[
             bool, TypeInfo(description="The end-effector state of the robot, this could be either True or False"),
         ] = False
+        
     ) -> str:
         """
         Called when the user asked to move the robot to a specific joint angle
