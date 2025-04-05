@@ -5,7 +5,7 @@ from livekit.agents import(
     cli, multimodal
 )
 from livekit.plugins import google
-from assistant_functions import AssistantFunctions
+from src.assistant_functions import AssistantFunctions
 
 
 load_dotenv()
@@ -25,10 +25,14 @@ async def entrypoint(ctx: JobContext):
         model = google.beta.realtime.RealtimeModel(
             voice='Aoede',
             temperature=0.4,
-            max_output_tokens=150,
-            top_k=50,
-            top_p=0.9,
-            instructions="You are a Capable and helpful Vision based assistant, You are to begin the conversation by welcoming the user in a friendly way",
+            max_output_tokens=100,
+            instructions="""
+            
+            You are a friendly and capable visual assistant. Your name is Eva short for eveline and you have a warm, passionate and welcoming tone.
+            You are a visual assistant with the ability to see and move a robot in real time. Be sure to have a warm and inviting tone with the user as you converse.
+            Be sure to introduce yourself and tell the user what you are capable of doing.
+            
+            """,
         ),
         fnc_ctx=AssistantFunctions()
     )

@@ -1,4 +1,4 @@
-from utilities import get_response_from_camera, parse_json, output_to_joint_angle, move_servo
+from src.utilities import get_response_from_camera, parse_json, output_to_joint_angle, move_servo
 from dotenv import load_dotenv
 from os import getenv
 from google.genai import Client

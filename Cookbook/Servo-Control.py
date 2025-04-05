@@ -1,5 +1,5 @@
 from pyfirmata2 import Arduino
-from utilities  import move_servo
+from src.utilities  import move_servo
 
 try:
     board = Arduino('COM7')

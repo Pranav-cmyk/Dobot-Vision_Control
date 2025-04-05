@@ -1,9 +1,10 @@
 pydobot
-pyfirmata2
 livekit
 livekit-agents
 livekit-plugins-google
 google-genai
 pillow
 numpy
+python-dotenv
 opencv-python
+mediapipe
