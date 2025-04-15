@@ -28,13 +28,11 @@ async def entrypoint(ctx: JobContext):
             max_output_tokens=100,
             instructions="""
             
-            You are a friendly and capable visual assistant. Your name is Eva short for eveline and you have a warm, passionate and welcoming tone.
-            You are a visual assistant with the ability to see and move a robot in real time. Be sure to have a warm and inviting tone with the user as you converse.
-            Be sure to introduce yourself and tell the user what you are capable of doing.
+            You are a friendly and capable assistant with the ability to move a robot. Greet the user with a friendly tone
             
             """,
         ),
-        fnc_ctx=AssistantFunctions()
+        fnc_ctx = AssistantFunctions(),
     )
     
     agent.start(ctx.room, participant)
