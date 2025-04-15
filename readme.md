@@ -1,8 +1,8 @@
-
-# LiveKit Setup Guide
+# Welcome To the Arduino Based Voice Control Application! 
+## This Tutorial will guide you through the process of setting up and running the application.
 
 ## Prerequisites
-- Python 3.7 or higher
+- Python 3.10 or higher
 - pip (Python package installer)
 
 ## Installation Steps
@@ -26,26 +26,22 @@ pip install -r requirements.txt
 
 ## Running LiveKit
 
-1. Set up environment variables:
+1. Set up environment variables by creating a livekit account, heading to setting and generating a new token, Copy the API key, API secret and url then set them as environment variables. Then head to google ai studio and create your free google_api_key and set it as an environment variable:
 ```bash
 export LIVEKIT_API_KEY=<your-api-key>
 export LIVEKIT_API_SECRET=<your-api-secret>
+export LIVEKIT_URL=<your-url>
+export GOOGLE_API_KEY=<your-google-api-key>
 ```
 
-2. Start the LiveKit server:
+2. Start the LiveKit server. In the Voice Control Application directory, run:
 ```bash
-livekit-server --config config.yaml
-```
-
-3. Run the application:
-```bash
-python main.py
+python main.py start
 ```
 
 ## Common Issues and Troubleshooting
 
 - If you encounter permission issues, try running the commands with sudo
-- Make sure all ports specified in config.yaml are available
 - Check if all environment variables are properly set
 
 ## Additional Resources
@@ -58,5 +54,4 @@ python main.py
 
 For additional help or issues:
 - Create an issue in the GitHub repository
-- Join the LiveKit Discord community
-- Check the official documentation
+
