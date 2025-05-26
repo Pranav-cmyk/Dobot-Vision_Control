@@ -1,4 +1,4 @@
-# Welcome To the Arduino Based Voice Control Application! 
+# Welcome To the Dobot Voice Control Application! 
 ## This Tutorial will guide you through the process of setting up and running the application.
 
 ## Prerequisites
